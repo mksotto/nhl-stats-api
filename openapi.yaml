@@ -1,0 +1,779 @@
+openapi: 3.0.3
+info:
+  title: NHL stats 1.0
+  version: 1.0.11
+servers:
+  - url: https://localhost:5173/api/v1
+tags:
+  - name: players
+    description: Players
+  - name: teams
+    description: Teams
+paths:
+  /players/{id}:
+    get:
+      tags: [players]
+      summary: Get player by id
+      operationId: playersIdGet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerAdvanced'
+        '404':
+          description: Not found
+  /players/{id}/games_log:
+    get:
+      tags: [players]
+      operationId: playersIdGamesLogGet
+      summary: Get log for games by season
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+        - name: season
+          in: query
+          schema:
+            type: number
+            example: 20242025
+        - name: gameType
+          in: query
+          schema:
+            type: number
+            enum: [2, 3]
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerGamesLog'
+        '404':
+          description: Not found
+  /players/spotlight:
+    get:
+      tags: [players]
+      summary: Get 10 spotlight players
+      operationId: playersSpotlightGet
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Player'
+        '404':
+          description: Not found
+  /players/leaders:
+    get:
+      tags: [players]
+      summary: Get the season leaders
+      operationId: playersLeadersGet
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Leaders'
+  /players/search/{name}:
+    get:
+      tags: [players]
+      summary: Search player by name
+      operationId: playersSearchNameGet
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: active
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchPlayer'
+        '404':
+          description: Not found
+  /teams/{abbrev}/roster/{season}:
+    get:
+      tags: [teams]
+      operationId: teamsAbbrevRosterGet
+      summary: Get team roster
+      parameters:
+        - name: abbrev
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 'chi'
+        - name: season
+          in: path
+          required: true
+          schema:
+            type: number
+            example: 20242025
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayersRoster'
+        '404':
+          description: Not found
+  /teams/{abbrev}/seasons:
+    get:
+      tags: [teams]
+      operationId: teamsAbbrevSeasonsGet
+      summary: Get all team seasons
+      parameters:
+        - name: abbrev
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 'chi'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamSeasons'
+        '404':
+          description: Not found
+
+components:
+  schemas:
+
+    PositionCode:
+      type: string
+      enum: ['L', 'C', 'R', 'D', 'G']
+
+    ShootsCatches:
+      type: string
+      enum: ['L', 'R']
+
+    Player:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 8477492
+        name:
+          type: string
+          example: 'Nathan MacKinnon'
+        sweaterNumber:
+          type: number
+          nullable: true
+          example: 29
+        position:
+          $ref: '#/components/schemas/PositionCode'
+        headshot:
+          type: string
+        currentTeam:
+          allOf:
+            - $ref: '#/components/schemas/PlayerTeam'
+          nullable: true
+      required: [id, name, sweaterNumber, position, headshot, currentTeam]
+
+    PlayerTeam:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 21
+        abbrev:
+          type: string
+          nullable: true
+          example: 'COL'
+        logo:
+          type: string
+          nullable: true
+        name:
+          type: string
+          example: 'Colorado Avalanche'
+      required: [abbrev, logo]
+
+    PlayerAdvanced:
+      allOf:
+        - $ref: '#/components/schemas/Player'
+        - type: object
+          properties:
+            isActive:
+              type: boolean
+              example: true
+            info:
+              $ref: '#/components/schemas/PlayerInfo'
+            emblems:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/PlayerEmblem'
+            heroImage:
+              type: string
+            lastSeasonStats:
+              nullable: true
+              allOf:
+                - type: object
+                  properties:
+                    season:
+                      type: string
+                      example: '2024-25'
+                  required: [season]
+                - $ref: '#/components/schemas/PlayerFeaturedStats'
+            careerStats:
+              $ref: '#/components/schemas/PlayerFeaturedStats'
+            last5Games:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/PlayerLast5Games'
+            seasonTotal:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/PlayerSeasonTotal'
+            awards:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/PlayerAwards'
+            currentTeamRoster:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/PlayerCurrentTeammate'
+            description:
+              type: string
+              nullable: true
+          required: [isActive, info, emblems, heroImage, lastSeasonStats, careerStats, last5Games, seasonTotal, awards, currentTeamRoster, description]
+
+    PlayerInfo:
+      type: object
+      properties:
+        height:
+          type: number
+          example: 183
+        weight:
+          type: number
+          example: 91
+        shootsCatches:
+          $ref: '#/components/schemas/ShootsCatches'
+        birth:
+          type: object
+          properties:
+            date:
+              type: string
+              format: date
+            city:
+              type: string
+              example: 'Halifax'
+            province:
+              type: string
+              example: 'Nova Scotia'
+              nullable: true
+            country:
+              type: string
+              example: 'CAN'
+          required: [date, city, province, country]
+        draftDetails:
+          $ref: '#/components/schemas/PlayerDraftDetails'
+      required: [height, weight, birth, shootsCatches, draftDetails]
+
+    PlayerDraftDetails:
+      type: object
+      nullable: true
+      properties:
+        year:
+          type: number
+          example: 2013
+        teamAbbrev:
+          type: string
+          example: 'COL'
+        round:
+          type: number
+          example: 1
+        pickInRound:
+          type: number
+          example: 1
+        overallPick:
+          type: number
+          example: 1
+      required: [year, teamAbbrev, round, pickInRound, overallPick]
+
+    PlayerFeaturedStats:
+      type: object
+      nullable: true
+      properties:
+        regular:
+          $ref: '#/components/schemas/PlayerStatsBySeason'
+        playoff:
+          $ref: '#/components/schemas/PlayerStatsBySeason'
+      required: [regular, playoff]
+
+    PlayerStatsBySeason:
+      type: object
+      nullable: true
+      properties:
+        gamesPlayed:
+          type: number
+          example: 64
+        goals:
+          type: number
+          example: 27
+        assists:
+          type: number
+          example: 73
+        points:
+          type: number
+          example: 100
+        plusMinus:
+          type: number
+          example: -3
+        wins:
+          type: number
+          example: 38
+        shutouts:
+          type: number
+          example: 6
+        goalsAgainstAverage:
+          type: string
+          example: '2.42'
+        savePctg:
+          type: string
+          example: '.924'
+
+    PlayerEmblem:
+      type: object
+      properties:
+        url:
+          type: string
+        title:
+          type: string
+      required: [url, title]
+
+    PlayerLast5Games:
+      type: object
+      properties:
+        gameDate:
+          type: string
+          format: date
+        opponentAbbrev:
+          type: string
+          example: 'TOR'
+        goals:
+          type: number
+          example: 2
+        assists:
+          type: number
+          example: 1
+        points:
+          type: number
+          example: 3
+        plusMinus:
+          type: string
+          example: '+5'
+        powerPlayGoals:
+          type: number
+          example: 1
+        shorthandedGoals:
+          type: number
+          example: 1
+        shots:
+          type: number
+          example: 6
+        shifts:
+          type: number
+          example: 10
+        toi:
+          type: string
+          example: '25:28'
+        gamesStarted:
+          type: number
+          example: 1
+        decision:
+          type: string
+          example: 'W'
+        shotsAgainst:
+          type: number
+          example: 24
+        goalsAgainst:
+          type: number
+          example: 1
+        savePctg:
+          type: string
+          example: '.924'
+      required: [gameDate, opponentAbbrev, toi]
+
+    PlayerSeasonTotal:
+      type: object
+      nullable: true
+      properties:
+        gameTypeId:
+          type: number
+          example: 2
+        season:
+          type: string
+          example: '2024-25'
+        leagueAbbrev:
+          type: string
+          example: 'NHL'
+        teamName:
+          type: string
+          example: 'Colorado Avalanche'
+        gamesPlayed:
+          type: number
+          example: 62
+        goals:
+          type: number
+          example: 27
+        assists:
+          type: number
+          example: 73
+        points:
+          type: number
+          example: 100
+        plusMinus:
+          type: string
+          example: '-3'
+        pim:
+          type: number
+          example: 42
+        powerPlayGoals:
+          type: number
+          example: 10
+        powerPlayPoints:
+          type: number
+          example: 13
+        shorthandedGoals:
+          type: number
+          example: 8
+        shorthandedPoints:
+          type: number
+          example: 20
+        avgToi:
+          type: string
+          example: '25:28'
+        gameWinningGoals:
+          type: number
+          example: 10
+        otGoals:
+          type: number
+          example: 10
+        shots:
+          type: number
+          example: 405
+        shootingPctg:
+          type: string
+          example: '9.7'
+        faceoffWinningPctg:
+          type: string
+          example: '42.6'
+        gamesStarted:
+          type: number
+          example: 34
+        wins:
+          type: number
+          example: 26
+        losses:
+          type: number
+          example: 6
+        otLosses:
+          type: number
+          example: 2
+        shotsAgainst:
+          type: number
+          example: 1383
+        goalsAgainstAvg:
+          type: string
+          example: '2.42'
+        savePctg:
+          type: string
+          example: '.925'
+        shutouts:
+          type: number
+          example: 3
+        timeOnIce:
+          type: string
+          example: '1383:24'
+      required: [gameTypeId, season, leagueAbbrev, teamName, gamesPlayed]
+
+    PlayerAwards:
+      type: object
+      properties:
+        trophy:
+          type: string
+          example: 'Stanley Cup'
+        seasons:
+          type: array
+          items:
+            type: object
+            properties:
+              assists:
+                type: number
+                example: 11
+              blockedShots:
+                type: number
+                example: 12
+              gameTypeId:
+                type: number
+                example: 3
+              gamesPlayed:
+                type: number
+                example: 20
+              goals:
+                type: number
+                example: 13
+              hits:
+                type: number
+                example: 28
+              pim:
+                type: number
+                example: 8
+              plusMinus:
+                type: string
+                example: '11'
+              points:
+                type: number
+                example: 11
+              season:
+                type: string
+                example: '2021-22'
+              wins:
+                type: number
+                example: 9
+              losses:
+                type: number
+                example: 6
+              goalsAgainstAverage:
+                type: string
+                example: '2.42'
+              savePctg:
+                type: string
+                example: '.924'
+            required: [season, gameTypeId, gamesPlayed]
+
+    PlayerCurrentTeammate:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 8474567
+        name:
+          type: string
+          example: 'Patrick Kane'
+        playerSlug:
+          type: string
+          example: 'patrick-kane-8474567'
+      required: [id, name, playerSlug]
+
+    ArrayOfLeaders:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Player'
+          - type: object
+            properties:
+              value:
+                type: string
+                example: '57'
+            required: [value]
+
+    Leaders:
+      type: object
+      properties:
+        points:
+          $ref: '#/components/schemas/ArrayOfLeaders'
+        goals:
+          $ref: '#/components/schemas/ArrayOfLeaders'
+        assists:
+          $ref: '#/components/schemas/ArrayOfLeaders'
+        goalsAgainstAverage:
+          $ref: '#/components/schemas/ArrayOfLeaders'
+        savePctg:
+          $ref: '#/components/schemas/ArrayOfLeaders'
+        shutouts:
+          $ref: '#/components/schemas/ArrayOfLeaders'
+      required: [points, goals, assists, goalsAgainstAverage, savePctg, shutouts]
+
+    SearchPlayer:
+      allOf:
+        - $ref: '#/components/schemas/Player'
+        - type: object
+          properties:
+            lastTeam:
+              allOf:
+                - $ref: '#/components/schemas/PlayerTeam'
+              nullable: true
+
+    PlayerRoster:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 8477492
+        name:
+          type: string
+          example: "Nathan MacKinnon"
+        sweaterNumber:
+          type: number
+          example: 29
+        position:
+          $ref: '#/components/schemas/PositionCode'
+        headshot:
+          type: string
+        height:
+          type: number
+          example: 183
+        weight:
+          type: number
+          example: 91
+        shootsCatches:
+          $ref: '#/components/schemas/ShootsCatches'
+        birth:
+          type: object
+          properties:
+            date:
+              type: string
+              format: date
+            city:
+              type: string
+              example: 'Halifax'
+            province:
+              type: string
+              example: 'Nova Scotia'
+              nullable: true
+            country:
+              type: string
+              example: 'CAN'
+          required: [date, city, province, country]
+      required: [id, name, sweaterNumber, position, headshot, height, weight, shootsCatches, birth]
+
+    PlayersRoster:
+      type: object
+      properties:
+        forward:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerRoster'
+        defensemen:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerRoster'
+        goalies:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerRoster'
+      required: [forward, defensemen, goalies]
+
+    PlayerGamesLog:
+      type: array
+      items:
+        type: object
+        properties:
+          gameDate:
+            type: string
+          teamAbbrev:
+            type: string
+            example: 'COL'
+          opponentAbbrev:
+            type: string
+            example: 'EDM'
+          goals:
+            type: number
+            example: 27
+          assists:
+            type: number
+            example: 73
+          points:
+            type: number
+            nullable: true
+            example: 100
+          plusMinus:
+            type: string
+            nullable: true
+            example: '-3'
+          pim:
+            type: string
+            example: '42'
+          powerPlayGoals:
+            type: string
+            nullable: true
+            example: '10'
+          powerPlayPoints:
+            type: string
+            nullable: true
+            example: '13'
+          shorthandedGoals:
+            type: string
+            nullable: true
+            example: '8'
+          shorthandedPoints:
+            type: string
+            nullable: true
+            example: '20'
+          gameWinningGoals:
+            type: string
+            nullable: true
+            example: '42'
+          otGoals:
+            type: string
+            nullable: true
+            example: '10'
+          shots:
+            type: string
+            nullable: true
+            example: '13'
+          shifts:
+            type: string
+            nullable: true
+            example: '8'
+          toi:
+            type: string
+            example: '20:30'
+          gamesStarted:
+            type: number
+            nullable: true
+            example: 34
+          decision:
+            type: string
+            nullable: true
+            enum: ['W', 'L']
+          shotsAgainst:
+            type: string
+            nullable: true
+            example: '1383'
+          goalsAgainstAvg:
+            type: string
+            nullable: true
+            example: '2.42'
+          savePctg:
+            type: string
+            nullable: true
+            example: '.925'
+        required: [gameDate, teamAbbrev, opponentAbbrev, goals, assists, points, plusMinus, pim, powerPlayGoals, powerPlayPoints, shorthandedGoals, shorthandedPoints, gameWinningGoals, otGoals, shots, shifts, toi, gamesStarted, decision, shotsAgainst, goalsAgainstAvg, savePctg]
+
+    TeamSeasons:
+      type: array
+      items:
+        type: number
+        example: 20242025
