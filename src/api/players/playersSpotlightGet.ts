@@ -8,7 +8,7 @@ export const playersSpotlightGet = (f: FastifyInstance) => {
     f.get('/spotlight', async (_req, resp) => {
         try {
             const playersSpotlight = await playerSpotlightGet();
-            return resp.code(200).send(makePlayersSpotlightPlayer(playersSpotlight)); // todo
+            return resp.code(200).send(makePlayersSpotlightPlayer(playersSpotlight));
         } catch (e) {
             if (isNhlApiError(e)) {
                 return resp.code(e.code).send(e.message);

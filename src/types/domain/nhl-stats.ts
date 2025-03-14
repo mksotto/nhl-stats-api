@@ -308,8 +308,21 @@ export interface PlayersRoster {
   goalies: PlayerRoster[];
 }
 
-export type PlayerGamesLog = {
-  gameDate: string;
+export interface PlayerGamesLog {
+  /** @example 20242025 */
+  seasonId?: number;
+  gameTypeId?: 2 | 3;
+  playerStatsSeason?: {
+    /** @example 20242025 */
+    season?: number;
+    gameTypes?: (2 | 3)[];
+  }[];
+  gamesLog?: PlayerGameLog[];
+}
+
+export interface PlayerGameLog {
+  /** @format date */
+  gameDate: Date;
   /** @example "COL" */
   teamAbbrev: string;
   /** @example "EDM" */
@@ -322,35 +335,35 @@ export type PlayerGamesLog = {
   points: number | null;
   /** @example "-3" */
   plusMinus: string | null;
-  /** @example "42" */
-  pim: string;
-  /** @example "10" */
-  powerPlayGoals: string | null;
-  /** @example "13" */
-  powerPlayPoints: string | null;
-  /** @example "8" */
-  shorthandedGoals: string | null;
-  /** @example "20" */
-  shorthandedPoints: string | null;
-  /** @example "42" */
-  gameWinningGoals: string | null;
-  /** @example "10" */
-  otGoals: string | null;
-  /** @example "13" */
-  shots: string | null;
-  /** @example "8" */
-  shifts: string | null;
+  /** @example 4 */
+  pim: number;
+  /** @example 1 */
+  powerPlayGoals: number | null;
+  /** @example 2 */
+  powerPlayPoints: number | null;
+  /** @example 2 */
+  shorthandedGoals: number | null;
+  /** @example "3'" */
+  shorthandedPoints: number | null;
+  /** @example 1 */
+  gameWinningGoals: number | null;
+  /** @example 1 */
+  otGoals: number | null;
+  /** @example 13 */
+  shots: number | null;
+  /** @example 8 */
+  shifts: number | null;
   /** @example "20:30" */
   toi: string;
   /** @example 34 */
   gamesStarted: number | null;
   decision: "W" | "L" | null;
-  /** @example "1383" */
-  shotsAgainst: string | null;
-  /** @example "2.42" */
-  goalsAgainstAvg: string | null;
+  /** @example 34 */
+  shotsAgainst: number | null;
+  /** @example 2 */
+  goalsAgainst?: number | null;
   /** @example ".925" */
   savePctg: string | null;
-}[];
+}
 
 export type TeamSeasons = number[];

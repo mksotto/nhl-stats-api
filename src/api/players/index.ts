@@ -3,6 +3,7 @@ import {playersIdGet} from "./playersIdGet";
 import {playersSpotlightGet} from "./playersSpotlightGet";
 import {playersLeadersGet} from "./playersLeadersGet";
 import {playersSearchNameGet} from "./playersSearchNameGet";
+import {playersIdGamesLogGet} from "./playersIdGamesLogGet";
 
 
 export const playersHandler: FastifyPluginCallback = (
@@ -12,6 +13,9 @@ export const playersHandler: FastifyPluginCallback = (
 ) => {
     // GET /players/:id
     playersIdGet(fastify);
+
+    // GET /players/:id/games_log
+    playersIdGamesLogGet(fastify);
 
     // GET /players/spotlight
     playersSpotlightGet(fastify);

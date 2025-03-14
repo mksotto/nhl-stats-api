@@ -81,6 +81,17 @@ paths:
       tags: [players]
       summary: Get the season leaders
       operationId: playersLeadersGet
+      parameters:
+        - name: season
+          in: query
+          schema:
+            type: number
+            example: 20242025
+        - name: gameType
+          in: query
+          schema:
+            type: number
+            enum: [2, 3]
       responses:
         '200':
           description: Ok
@@ -686,91 +697,119 @@ components:
       required: [forward, defensemen, goalies]
 
     PlayerGamesLog:
-      type: array
-      items:
-        type: object
-        properties:
-          gameDate:
-            type: string
-          teamAbbrev:
-            type: string
-            example: 'COL'
-          opponentAbbrev:
-            type: string
-            example: 'EDM'
-          goals:
-            type: number
-            example: 27
-          assists:
-            type: number
-            example: 73
-          points:
-            type: number
-            nullable: true
-            example: 100
-          plusMinus:
-            type: string
-            nullable: true
-            example: '-3'
-          pim:
-            type: string
-            example: '42'
-          powerPlayGoals:
-            type: string
-            nullable: true
-            example: '10'
-          powerPlayPoints:
-            type: string
-            nullable: true
-            example: '13'
-          shorthandedGoals:
-            type: string
-            nullable: true
-            example: '8'
-          shorthandedPoints:
-            type: string
-            nullable: true
-            example: '20'
-          gameWinningGoals:
-            type: string
-            nullable: true
-            example: '42'
-          otGoals:
-            type: string
-            nullable: true
-            example: '10'
-          shots:
-            type: string
-            nullable: true
-            example: '13'
-          shifts:
-            type: string
-            nullable: true
-            example: '8'
-          toi:
-            type: string
-            example: '20:30'
-          gamesStarted:
-            type: number
-            nullable: true
-            example: 34
-          decision:
-            type: string
-            nullable: true
-            enum: ['W', 'L']
-          shotsAgainst:
-            type: string
-            nullable: true
-            example: '1383'
-          goalsAgainstAvg:
-            type: string
-            nullable: true
-            example: '2.42'
-          savePctg:
-            type: string
-            nullable: true
-            example: '.925'
-        required: [gameDate, teamAbbrev, opponentAbbrev, goals, assists, points, plusMinus, pim, powerPlayGoals, powerPlayPoints, shorthandedGoals, shorthandedPoints, gameWinningGoals, otGoals, shots, shifts, toi, gamesStarted, decision, shotsAgainst, goalsAgainstAvg, savePctg]
+      type: object
+      properties:
+        seasonId:
+          type: number
+          example: 20242025
+        gameTypeId:
+          type: number
+          enum: [2, 3]
+        playerStatsSeason:
+          type: array
+          items:
+            type: object
+            properties:
+              season:
+                type: number
+                example: 20242025
+              gameTypes:
+                type: array
+                items:
+                  type: number
+                  enum: [2, 3]
+        gamesLog:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerGameLog'
+
+
+
+    PlayerGameLog:
+      type: object
+      properties:
+        gameDate:
+          type: string
+          format: date
+        teamAbbrev:
+          type: string
+          example: 'COL'
+        opponentAbbrev:
+          type: string
+          example: 'EDM'
+        goals:
+          type: number
+          example: 27
+        assists:
+          type: number
+          example: 73
+        points:
+          type: number
+          nullable: true
+          example: 100
+        plusMinus:
+          type: string
+          nullable: true
+          example: '-3'
+        pim:
+          type: number
+          example: 4
+        powerPlayGoals:
+          type: number
+          nullable: true
+          example: 1
+        powerPlayPoints:
+          type: number
+          nullable: true
+          example: 2
+        shorthandedGoals:
+          type: number
+          nullable: true
+          example: 2
+        shorthandedPoints:
+          type: number
+          nullable: true
+          example: 3'
+        gameWinningGoals:
+          type: number
+          nullable: true
+          example: 1
+        otGoals:
+          type: number
+          nullable: true
+          example: 1
+        shots:
+          type: number
+          nullable: true
+          example: 13
+        shifts:
+          type: number
+          nullable: true
+          example: 8
+        toi:
+          type: string
+          example: '20:30'
+        gamesStarted:
+          type: number
+          nullable: true
+          example: 34
+        decision:
+          type: string
+          nullable: true
+          enum: ['W', 'L']
+        shotsAgainst:
+          type: number
+          nullable: true
+          example: 34
+        goalsAgainst:
+          type: number
+          nullable: true
+          example: 2
+        savePctg:
+          type: string
+          nullable: true
+          example: '.925'
+      required: [gameDate, teamAbbrev, opponentAbbrev, goals, assists, points, plusMinus, pim, powerPlayGoals, powerPlayPoints, shorthandedGoals, shorthandedPoints, gameWinningGoals, otGoals, shots, shifts, toi, gamesStarted, decision, shotsAgainst, goalsAgainstAvg, savePctg]
 
     TeamSeasons:
       type: array
