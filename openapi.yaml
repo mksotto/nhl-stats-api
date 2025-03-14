@@ -718,10 +718,13 @@ components:
                 items:
                   type: number
                   enum: [2, 3]
+            required: [season, gameTypes]
         gamesLog:
           type: array
+          nullable: true
           items:
             $ref: '#/components/schemas/PlayerGameLog'
+      required: [seasonId, gameTypeId, playerStatsSeason, gamesLog]
 
 
 

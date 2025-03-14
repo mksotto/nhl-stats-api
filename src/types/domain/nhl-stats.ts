@@ -310,14 +310,14 @@ export interface PlayersRoster {
 
 export interface PlayerGamesLog {
   /** @example 20242025 */
-  seasonId?: number;
-  gameTypeId?: 2 | 3;
-  playerStatsSeason?: {
+  seasonId: number;
+  gameTypeId: 2 | 3;
+  playerStatsSeason: {
     /** @example 20242025 */
-    season?: number;
-    gameTypes?: (2 | 3)[];
+    season: number;
+    gameTypes: (2 | 3)[];
   }[];
-  gamesLog?: PlayerGameLog[];
+  gamesLog: PlayerGameLog[] | null;
 }
 
 export interface PlayerGameLog {

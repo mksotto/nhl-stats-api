@@ -1,8 +1,8 @@
 import { Name } from "./base";
 
 export interface PlayerIdGameLogGet {
-    seasonId?:           number;
-    gameTypeId?:         number;
+    seasonId:           number;
+    gameTypeId:         number;
     playerStatsSeasons: PlayerStatsSeason[];
     gameLog?:            GameLog[];
 }

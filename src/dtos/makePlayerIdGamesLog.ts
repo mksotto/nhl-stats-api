@@ -9,5 +9,5 @@ export const makePlayerIdGameLog = (p: PlayerIdGameLogGet): PlayerGamesLog => ({
         season: season as 2 | 3,
         gameTypes: gameTypes.map((gameType) => gameType as 2 | 3),
     })),
-    gamesLog: p.gameLog?.map(makePlayerGameLog),
+    gamesLog: p.gameLog?.map(makePlayerGameLog) || null,
 });
