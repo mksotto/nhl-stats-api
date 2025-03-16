@@ -600,14 +600,17 @@ components:
     ArrayOfLeaders:
       type: array
       items:
-        allOf:
-          - $ref: '#/components/schemas/Player'
-          - type: object
-            properties:
-              value:
-                type: string
-                example: '57'
-            required: [value]
+        $ref: '#/components/schemas/Leader'
+
+    Leader:
+      allOf:
+        - $ref: '#/components/schemas/Player'
+        - type: object
+          properties:
+            value:
+              type: string
+              example: '57'
+          required: [value]
 
     Leaders:
       type: object

@@ -258,10 +258,12 @@ export interface PlayerCurrentTeammate {
   playerSlug: string;
 }
 
-export type ArrayOfLeaders = (Player & {
+export type ArrayOfLeaders = Leader[];
+
+export type Leader = Player & {
   /** @example "57" */
   value: string;
-})[];
+};
 
 export interface Leaders {
   points: ArrayOfLeaders;
