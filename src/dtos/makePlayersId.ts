@@ -164,5 +164,8 @@ export const makePlayersId = (
         name: player.firstName.default + ' ' + player.lastName.default,
         playerSlug: player.playerSlug
     })) : null,
-    description: d.items[0]?.fields.biography || null,
+    description: d.items[0]?.fields.biography ? {
+        title: d.items[0].tags[0].title,
+        biography: d.items[0].fields.biography,
+    } : null,
 });
