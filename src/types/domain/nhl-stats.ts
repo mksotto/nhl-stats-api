@@ -310,7 +310,7 @@ export interface PlayerRoster {
 }
 
 export interface PlayersRoster {
-  forward: PlayerRoster[];
+  forwards: PlayerRoster[];
   defensemen: PlayerRoster[];
   goalies: PlayerRoster[];
 }

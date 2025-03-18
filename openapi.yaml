@@ -695,7 +695,7 @@ components:
     PlayersRoster:
       type: object
       properties:
-        forward:
+        forwards:
           type: array
           items:
             $ref: '#/components/schemas/PlayerRoster'
@@ -707,7 +707,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlayerRoster'
-      required: [forward, defensemen, goalies]
+      required: [forwards, defensemen, goalies]
 
     PlayerGamesLog:
       type: object
