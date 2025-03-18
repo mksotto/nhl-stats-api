@@ -825,7 +825,7 @@ components:
           type: string
           nullable: true
           example: '.925'
-      required: [gameDate, teamAbbrev, opponentAbbrev, goals, assists, points, plusMinus, pim, powerPlayGoals, powerPlayPoints, shorthandedGoals, shorthandedPoints, gameWinningGoals, otGoals, shots, shifts, toi, gamesStarted, decision, shotsAgainst, goalsAgainstAvg, savePctg]
+      required: [gameDate, teamAbbrev, opponentAbbrev, goals, assists, points, plusMinus, pim, powerPlayGoals, powerPlayPoints, shorthandedGoals, shorthandedPoints, gameWinningGoals, otGoals, shots, shifts, toi, gamesStarted, decision, shotsAgainst, goalsAgainst, savePctg]
 
     TeamSeasons:
       type: array
