@@ -10,10 +10,4 @@ void generateApi({
     output: PATH,
     generateClient: false,
     generateUnionEnums: true,
-    primitiveTypeConstructs: (struct) => ({
-        string: {
-            "date": "Date",
-            "date-time": "Date",
-        }
-    })
 })
