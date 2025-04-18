@@ -8,7 +8,8 @@ f.register(playersHandler, {prefix: 'players'});
 f.register(teamsHandler, {prefix: 'teams'});
 
 void f.listen({
-    port: 8080
+    port: 8080,
+    host: "0.0.0.0",
 });
 
 process.once('SIGINT', () => { void f.close() });
