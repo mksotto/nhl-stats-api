@@ -12,7 +12,7 @@ export interface Player {
     weightInPounds:      number;
     heightInCentimeters: number;
     weightInKilograms:   number;
-    birthDate:           Date;
+    birthDate:           string;
     birthCity:           Name;
     birthCountry:        string;
     birthStateProvince?: Name;

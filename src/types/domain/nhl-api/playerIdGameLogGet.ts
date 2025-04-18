@@ -16,7 +16,7 @@ export interface GameLog {
     gameId:             number;
     teamAbbrev:         string;
     homeRoadFlag:       string;
-    gameDate:           Date;
+    gameDate:           string;
     goals:              number;
     assists:            number;
     commonName:         Name;

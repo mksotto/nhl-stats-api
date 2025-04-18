@@ -24,8 +24,8 @@ export interface Item {
     fields:          ItemFields;
     createdBy:       string;
     lastUpdatedBy:   string;
-    lastUpdatedDate: Date;
-    contentDate:     Date;
+    lastUpdatedDate: string;
+    contentDate:     string;
     featured:        number;
     entityCode:      string;
 }

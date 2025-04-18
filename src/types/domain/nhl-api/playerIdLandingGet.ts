@@ -53,7 +53,7 @@ export type PlayerStats = {
 
 export interface Last5Game {
     assists?:          number;
-    gameDate:         Date;
+    gameDate:         string;
     gameId:           number;
     gameTypeId:       number;
     goals?:            number;
@@ -163,7 +163,7 @@ export interface PlayerPlayerIdLandingGet {
     heightInCentimeters:          number;
     weightInPounds?:               number;
     weightInKilograms:            number;
-    birthDate:                    Date;
+    birthDate:                    string;
     birthCity:                    Name;
     birthStateProvince?:           Name;
     birthCountry:                 string;
